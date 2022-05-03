@@ -1,0 +1,23 @@
+{
+  "name": "webpack-basic",
+  "version": "1.0.0",
+  "description": "webpack setup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wsko-12/webpack-basic.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Wsko-12/webpack-basic/issues"
+  },
+  "homepage": "https://github.com/Wsko-12/webpack-basic#readme",
+  "devDependencies": {
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
