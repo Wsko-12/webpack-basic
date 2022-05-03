@@ -2,9 +2,9 @@
   "name": "webpack-basic",
   "version": "1.0.0",
   "description": "webpack setup",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devPack":"webpack --watch"
   },
   "repository": {
     "type": "git",
