@@ -7,6 +7,7 @@
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 import * as __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_build_three_module_js_b7aa890c__ from "https://unpkg.com/three@0.140.0/build/three.module.js";
+import * as __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_examples_jsm_loaders_GLTFLoader_js_35ca2246__ from "https://unpkg.com/three@0.140.0/examples/jsm/loaders/GLTFLoader.js";
 /******/ var __webpack_modules__ = ({
 
 /***/ "./client/src/index.js":
@@ -15,7 +16,37 @@ import * as __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_build_three_
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var https_unpkg_com_three_0_140_0_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! https://unpkg.com/three@0.140.0/build/three.module.js */ \"https://unpkg.com/three@0.140.0/build/three.module.js\");\n/* harmony import */ var _modules_renderer_renderer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/renderer/renderer.js */ \"./client/src/modules/renderer/renderer.js\");\n\r\n\r\n\r\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({\r\n  THREE:https_unpkg_com_three_0_140_0_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__,\r\n});\r\n\r\n\r\n\r\n_modules_renderer_renderer_js__WEBPACK_IMPORTED_MODULE_1__[\"default\"].init();\n\n//# sourceURL=webpack://webpack-basic/./client/src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var https_unpkg_com_three_0_140_0_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! https://unpkg.com/three@0.140.0/build/three.module.js */ \"https://unpkg.com/three@0.140.0/build/three.module.js\");\n/* harmony import */ var _modules_renderer_renderer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/renderer/renderer.js */ \"./client/src/modules/renderer/renderer.js\");\n/* harmony import */ var _modules_atlas_assets_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/atlas/assets.js */ \"./client/src/modules/atlas/assets.js\");\n\r\n\r\n\r\n\r\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({\r\n  THREE:https_unpkg_com_three_0_140_0_build_three_module_js__WEBPACK_IMPORTED_MODULE_0__,\r\n  ASSETS:_modules_atlas_assets_js__WEBPACK_IMPORTED_MODULE_2__[\"default\"],\r\n});\r\n\r\n_modules_atlas_assets_js__WEBPACK_IMPORTED_MODULE_2__[\"default\"].load();\r\n\r\n_modules_renderer_renderer_js__WEBPACK_IMPORTED_MODULE_1__[\"default\"].init();\n\n//# sourceURL=webpack://webpack-basic/./client/src/index.js?");
+
+/***/ }),
+
+/***/ "./client/src/modules/atlas/assets.js":
+/*!********************************************!*\
+  !*** ./client/src/modules/atlas/assets.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _models__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./models */ \"./client/src/modules/atlas/models.js\");\n/* harmony import */ var _textures__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./textures */ \"./client/src/modules/atlas/textures.js\");\n/* harmony import */ var https_unpkg_com_three_0_140_0_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! https://unpkg.com/three@0.140.0/examples/jsm/loaders/GLTFLoader.js */ \"https://unpkg.com/three@0.140.0/examples/jsm/loaders/GLTFLoader.js\");\n\r\n\r\n\r\n\r\n\r\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({\r\n  textures:{},\r\n  geometries:{},\r\n\r\n  load:async function(){\r\n    const that = this;\r\n    async function loadModels(){\r\n      const loader = new https_unpkg_com_three_0_140_0_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__.GLTFLoader();\r\n      let modelIndex = -1;\r\n      \r\n      return new Promise(res => {\r\n        function load(){ \r\n          modelIndex++;\r\n          if(modelIndex < _models__WEBPACK_IMPORTED_MODULE_0__[\"default\"].length){\r\n            const modelData = _models__WEBPACK_IMPORTED_MODULE_0__[\"default\"][modelIndex];\r\n            const path = './assets/models/' + modelData.folder + modelData.file;\r\n              loader.load(path,(model)=>{\r\n                that.geometries[modelData.name] = model.scene.children[0].geometry;\r\n                load();\r\n              });\r\n          }else{\r\n            res(true);\r\n          };\r\n        }\r\n        load();\r\n      });\r\n    };\r\n\r\n\r\n    loadModels().then((res)=>{\r\n      console.log(res)\r\n    });\r\n  }\r\n\r\n});\r\n\n\n//# sourceURL=webpack://webpack-basic/./client/src/modules/atlas/assets.js?");
+
+/***/ }),
+
+/***/ "./client/src/modules/atlas/models.js":
+/*!********************************************!*\
+  !*** ./client/src/modules/atlas/models.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([\r\n    {\r\n        name:'test_model',\r\n        folder:'',\r\n        file:'test.glb',\r\n    }\r\n]);\n\n//# sourceURL=webpack://webpack-basic/./client/src/modules/atlas/models.js?");
+
+/***/ }),
+
+/***/ "./client/src/modules/atlas/textures.js":
+/*!**********************************************!*\
+  !*** ./client/src/modules/atlas/textures.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ([\r\n    {\r\n        name:'test_texture',\r\n        file:'test.png',\r\n    }\r\n]);\n\n//# sourceURL=webpack://webpack-basic/./client/src/modules/atlas/textures.js?");
 
 /***/ }),
 
@@ -38,6 +69,18 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 var x = y => { var x = {}; __webpack_require__.d(x, y); return x; }
 var y = x => () => x
 module.exports = __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_build_three_module_js_b7aa890c__;
+
+/***/ }),
+
+/***/ "https://unpkg.com/three@0.140.0/examples/jsm/loaders/GLTFLoader.js":
+/*!*************************************************************************************!*\
+  !*** external "https://unpkg.com/three@0.140.0/examples/jsm/loaders/GLTFLoader.js" ***!
+  \*************************************************************************************/
+/***/ ((module) => {
+
+var x = y => { var x = {}; __webpack_require__.d(x, y); return x; }
+var y = x => () => x
+module.exports = __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_examples_jsm_loaders_GLTFLoader_js_35ca2246__;
 
 /***/ })
 
