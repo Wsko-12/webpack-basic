@@ -7,6 +7,8 @@ export default {
   ASSETS:ASSETS,
 };
 
-ASSETS.load();
+ASSETS.load().then(assets => {
+  console.log(assets)
+});
 
 RENDERER.init();
