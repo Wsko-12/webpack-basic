@@ -6,7 +6,6 @@ export default {
   THREE:THREE,
   ASSETS:ASSETS,
 };
-
 ASSETS.load().then(assets => {
   console.log(assets)
 });
