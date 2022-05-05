@@ -11,7 +11,7 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, './client/dist'),
   },
-    plugins: [
+  plugins: [
     new CopyPlugin({
         patterns: [
             { from: path.resolve(__dirname, './client/src/assets'), to: path.resolve(__dirname, './client/dist/assets') },
@@ -31,6 +31,21 @@ module.exports = {
       //   useShortDoctype: true
       // }
     }),
-    ],
+  ],
+  module:{
+    rules:[
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
+    ]
+  },
   experiments: { outputModule: true },
 };
