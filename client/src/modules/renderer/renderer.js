@@ -20,7 +20,7 @@ export default {
         const scene = new THREE.Scene();
         this.scene = scene;
 
-        window.addEventListener("resize", this.setSize);
+        window.addEventListener("resize", ()=>{this.setSize()});
         this.setSize();
         
 
