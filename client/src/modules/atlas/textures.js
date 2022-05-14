@@ -5,13 +5,8 @@ export default [
         file:'test.png',
     },
     {
-        name:'gradient_map',
+        name:'pxTexture',
         folder:'',
-        file:'gradient_map.png',
-    },
-    {
-        name:'grass',
-        folder:'',
-        file:'grass.png',
+        file:'pxTexture.png',
     }
 ]

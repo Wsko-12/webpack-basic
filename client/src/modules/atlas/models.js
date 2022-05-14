@@ -3,5 +3,20 @@ export default [
         name:'test_model',
         folder:'',
         file:'test.glb',
+    },
+    {
+        name:'grass_1',
+        folder:'',
+        file:'grass_1.glb',
+    },
+    {
+        name:'grass_2',
+        folder:'',
+        file:'grass_2.glb',
+    },
+    {
+        name:'grass_3',
+        folder:'',
+        file:'grass_3.glb',
     }
 ]

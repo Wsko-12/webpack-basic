@@ -1,6 +1,7 @@
 import MAIN from '../../index.js';
 let THREE;
-let mesh,grassPlane;
+let mesh,box;
+let playerPos;
 
 let time = {value:0};
 export default {
@@ -17,6 +18,7 @@ export default {
         this.renderer = renderer;
         renderer.shadowMap.enabled = true;
         // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
 
         const camera = new THREE.PerspectiveCamera(10, 2, 0.2, 500);
@@ -34,39 +36,50 @@ export default {
 
         if(startRender){
             this.clock.start();
+
+
             const light = new THREE.DirectionalLight();
-            console.log(light.shadow.bias = -0.0001);
+            light.shadow.bias = 0;
             light.castShadow = true;
             mesh = new THREE.Mesh(new THREE.TorusKnotGeometry(0.5,0.2),new THREE.MeshToonMaterial());
-            MAIN.ASSETS.textures.gradient_map.magFilter = THREE.NearestFilter;
-            MAIN.ASSETS.textures.gradient_map.minFilter = THREE.NearestFilter;
-            mesh.material.gradientMap = MAIN.ASSETS.textures.gradient_map;
             light.position.set(10,10,-10);
+            light.color = new THREE.Color(0xfffcf2);
             scene.add(light);
-            const ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
+            const ambientLight = new THREE.AmbientLight();
+            ambientLight.color = new THREE.Color(0xf2fcff);
+            ambientLight.intensity = 0.4;
             scene.add( ambientLight );
 
-            const plane =  new THREE.Mesh(new THREE.PlaneGeometry(),new THREE.MeshToonMaterial());
+            const plane =  new THREE.Mesh(new THREE.PlaneGeometry(),new THREE.MeshPhongMaterial({color:0x232e1b}));
             plane.rotation.x = -90*Math.PI/180;
-            plane.position.y -= 0.5;
-            plane.scale.x = plane.scale.y = 5;
+            // plane.position.y -= 0.5;
+            plane.scale.x = plane.scale.y = 10;
             plane.receiveShadow = true;
             scene.add(plane);
             
-            const grassMaterial = new THREE.MeshToonMaterial();
-            MAIN.ASSETS.textures.grass.magFilter = THREE.NearestFilter;
-            MAIN.ASSETS.textures.grass.minFilter = THREE.NearestFilter;
-            MAIN.ASSETS.textures.grass.flipY = true;
-            grassMaterial.map = MAIN.ASSETS.textures.grass;
+            const grassMaterial = new THREE.MeshPhongMaterial();
+            MAIN.ASSETS.textures.pxTexture.magFilter = THREE.NearestFilter;
+            MAIN.ASSETS.textures.pxTexture.minFilter = THREE.NearestFilter;
+            MAIN.ASSETS.textures.pxTexture.flipY = false;
+            grassMaterial.map = MAIN.ASSETS.textures.pxTexture;
             grassMaterial.transparent = true;
+
+            grassMaterial.side = THREE.DoubleSide;
             grassMaterial.alphaTest = 0.6;
+
+
+            playerPos = new THREE.Uniform(new THREE.Vector2(0,0));
             grassMaterial.onBeforeCompile = (shader) => {
                 shader.uniforms.time = time;
-                const token_vs = `#define TOON`;
+                
+                shader.uniforms.playerPos = playerPos;
+                const token_vs = `#define PHONG`;
                 const vs = `
-                    #define TOON
+                    #define PHONG
                     uniform float time;
+                    uniform vec2 playerPos;
                     varying vec3 vPosition;
+                    varying vec4 xPosition;
                 `;
 
                 shader.vertexShader = shader.vertexShader.replace(token_vs,vs);
@@ -75,26 +88,39 @@ export default {
                 const vs_2 = `
                     #include <fog_vertex>
                     vPosition = position;
+                    vPosition.x += vPosition.y*cos(time)*0.05;
                     vPosition.z += vPosition.y*sin(time)*0.05;
+                    xPosition = modelMatrix*vec4( vPosition, 1.0 );
+                    if(vPosition.y > 0.2 && distance(xPosition.x,playerPos.x) < .5 && distance(xPosition.z,playerPos.y) < .5){
+                        vPosition.y *= 0.3;
+                        vPosition.x +=  xPosition.x - playerPos.x;
+                        vPosition.z += xPosition.z - playerPos.y;
+                    }
                     gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
                 `
                 shader.vertexShader = shader.vertexShader.replace(token_vs_2,vs_2);
             };
 
+
+
             const depthMaterial = new THREE.MeshDepthMaterial( {
                 depthPacking: THREE.RGBADepthPacking,
-                map:  MAIN.ASSETS.textures.grass,
+                map:  MAIN.ASSETS.textures.pxTexture,
                 alphaTest: 0.2,
             } );
             
             depthMaterial.onBeforeCompile = (shader) => {
                 shader.uniforms.time = time;
+                shader.uniforms.playerPos = playerPos;
                 const token_vs = `#include <common>`;
                 const vs = `
                 #include <common>
                 uniform float time;
                 uniform float random;
+                uniform vec2 playerPos;
                 varying vec3 vPosition;
+                varying vec4 xPosition;
+                
                 `;
 
                 shader.vertexShader = shader.vertexShader.replace(token_vs,vs);
@@ -103,33 +129,85 @@ export default {
                 const vs_2 = `
                     vHighPrecisionZW = gl_Position.zw;
                     vPosition = position;
+                    vPosition.x += vPosition.y*cos(time)*0.05;
                     vPosition.z += vPosition.y*sin(time)*0.05;
+                    xPosition = modelMatrix*vec4( vPosition, 1.0 );
+                    if(vPosition.y > 0.2 && distance(xPosition.x,playerPos.x) < .5 && distance(xPosition.z,playerPos.y) < .5){
+                        vPosition.y *= 0.3;
+                        vPosition.x +=  xPosition.x - playerPos.x;
+                        vPosition.z += xPosition.z - playerPos.y;
+                    }
                     gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );
                 `
                 shader.vertexShader = shader.vertexShader.replace(token_vs_2,vs_2);
             };
 
+            const count = 3;
 
-            for(let i =0; i<60;i++){
-               const grassPlane = new THREE.Mesh(new THREE.PlaneGeometry(),grassMaterial);
-                grassPlane.material.side = THREE.DoubleSide;
+            for(let x = -count; x<count;x++){
+                for(let y=-count;y<count;y++){
+                    const grassPlane = new THREE.Mesh(MAIN.ASSETS.geometries.grass_1.clone(),grassMaterial);
 
-    
-                grassPlane.castShadow = true;
-                grassPlane.receiveShadow = true;
+                    grassPlane.castShadow = true;
+                    grassPlane.receiveShadow = true;
+                    
+                    grassPlane.position.x = x;
+                    grassPlane.position.y = -0.0;
+                    grassPlane.position.z = y;
 
-                grassPlane.customDepthMaterial = depthMaterial;
+                    grassPlane.rotation.y = Math.PI/180 * Math.random()*180;
 
-                grassPlane.rotation.y = (Math.random()-0.5)*4;
-                grassPlane.position.x = (Math.random()-0.5)*2.5;
-                grassPlane.position.z = (Math.random()-0.5)*2.5;
+                    grassPlane.customDepthMaterial = depthMaterial;
+                    scene.add(grassPlane);
+                }
+            }
+            
+            for(let x = -count; x<count;x++){
+                for(let y=-count;y<count;y++){
+                    const grassPlane = new THREE.Mesh(MAIN.ASSETS.geometries.grass_2.clone(),grassMaterial);    
+        
+                    grassPlane.castShadow = true;
+                    grassPlane.receiveShadow = true;
+                    
+                    grassPlane.position.x = x;
+                    grassPlane.position.z = y;
 
-                scene.add(grassPlane);
+                    grassPlane.rotation.y = Math.PI/180 * Math.random()*180;
+
+
+                    grassPlane.customDepthMaterial = depthMaterial;
+                    scene.add(grassPlane);
+                }
+            }
+
+            for(let x = -count; x<count;x++){
+                for(let y=-count;y<count;y++){
+                    const grassPlane = new THREE.Mesh(MAIN.ASSETS.geometries.grass_3.clone(),grassMaterial);
+        
+                    grassPlane.castShadow = true;
+                    grassPlane.receiveShadow = true;
+                    
+                    grassPlane.position.x = x;
+                    grassPlane.position.z = y;
+
+                    grassPlane.rotation.y = Math.PI/180 * Math.random()*180;
+
+
+                    grassPlane.customDepthMaterial = depthMaterial;
+                    scene.add(grassPlane);
+                }
             }
 
 
 
+            box = new THREE.Mesh(new THREE.BoxBufferGeometry(0.2,1,0.2),new THREE.MeshPhongMaterial());
+            box.material.gradientMap = MAIN.ASSETS.textures.gradient_map;
+            box.castShadow = true;
+            box.receiveShadow = true;
+            box.position.y = 0.5;
 
+            scene.add(box)
+            
             this.render();
         }
     },
@@ -148,19 +226,44 @@ export default {
 
         this.camera.aspect = windowWidth / windowHeight;
         this.camera.updateProjectionMatrix();
+        console.log( this.renderer.info.render.triangles );
     },
 
     render:function(){
+
         time.value += 0.01;
+
+        // box.rotation.y = time.value;
         this.renderer.render(this.scene, this.camera);
+
+
+        if(playerPos){
+            box.position.x = playerPos.value.x;
+            box.position.z = playerPos.value.y;
+            this.camera.position.x = playerPos.value.x + 10;
+            this.camera.position.z = playerPos.value.y + 10;
+            this.camera.lookAt(playerPos.value.x,0,playerPos.value.y);
+
+        }
+
         requestAnimationFrame(()=>{this.render()});
     },
 };
 
 
 
-function createScene(){
-
-
-
-}
+document.addEventListener('keydown',(e)=>{
+    let speed = 0.1;
+    if(e.code === 'ArrowUp'){
+        playerPos.value.x -= speed;
+    }
+    if(e.code === 'ArrowDown'){
+        playerPos.value.x += speed;
+    }
+    if(e.code === 'ArrowLeft'){
+        playerPos.value.y += speed;
+    }
+    if(e.code === 'ArrowRight'){
+        playerPos.value.y -= speed;
+    }
+})
