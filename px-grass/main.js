@@ -4,7 +4,7 @@
  * It uses "eval()" calls to create a separate source file in the browser devtools.
  * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
  * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ * If you  are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
 import * as __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_build_three_module_js_b7aa890c__ from "https://unpkg.com/three@0.140.0/build/three.module.js";
 import * as __WEBPACK_EXTERNAL_MODULE_https_unpkg_com_three_0_140_0_examples_jsm_loaders_GLTFLoader_js_35ca2246__ from "https://unpkg.com/three@0.140.0/examples/jsm/loaders/GLTFLoader.js";
